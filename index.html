@@ -76,6 +76,11 @@
             </tr>
         </table>
 
+        <ul id="multiAppend">
+
+        </ul>
+
+
         <script type="text/javascript" charset="utf-8">
             $.ready(function(){
                 $('ul:nth-child(1)').find('li').css({
@@ -105,6 +110,18 @@
                 $('th:nth-child(1)').css({
                     backgroundColor: '#f60'
                 });
+
+                maRoot = $('#multiAppend');
+                for(var i = 0; i < 10; i++){
+                    var li = $.el('li').text(i)
+                    maRoot.append(li);
+                }
+
+                var em = $.el('strong').text('yo');
+                var strong = $.el('strong').text('babe');
+
+                var existingLi = $('#multiAppend li').append(em,strong);
+
             });
         </script>
     </body>

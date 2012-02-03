@@ -24,8 +24,8 @@
             @appendChild createTextNode striptags str
 
         empty : () ->
-            while @.firstChild
-                @.removeChild this.firstChild
+            while @firstChild
+                @removeChild this.firstChild
             @innerHTML = ""
 
         value: (val) ->
@@ -162,18 +162,19 @@
             true
 
         @method = (fn) ->
+            cb = FN[fn]
             if fn.indexOf('get') is 0
                 @prototype[fn] = (combine=false, args...) ->
-                    @_collect FN[fn], combine, args
+                    @_collect cb, combine, args
             else if fn.indexOf('is') is 0
                 @prototype[fn] = (args...) ->
-                    @_checkAll FN[fn], args
+                    @_checkAll cb, args
                 anyFn = fn.replace /^(is)/, '$1Any'
                 @prototype[anyFn] = (args...) ->
-                    @_checkAny FN[fn], args
+                    @_checkAny cb, args
             else
                 @prototype[fn] = (args...) ->
-                    @_execute FN[fn], args
+                    @_execute cb, args
 
         for method of FN
             if FN.hasOwnProperty method
