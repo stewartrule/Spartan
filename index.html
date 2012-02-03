@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Spartan</title>
+        <meta charset="utf-8">
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <script src="Spartan.js" type="text/javascript" charset="utf-8"></script>
+        <style type="text/css" media="screen">
+            body,
+            input,
+            textarea {
+              font: normal 13px/18px "Lucida Sans Unicode", "LucidaSansUnicodeRegular", "Lucida Grande", Verdana, Arial, Helvetica;
+            }
+        </style>
+    </head>
+    <body>
+
+        <ul>
+            <li>1</li>
+            <li>1</li>
+            <li>1</li>
+            <li>1</li>
+            <li>1</li>
+            <li>1</li>
+            <li>1</li>
+            <li>1</li>
+        </ul>
+
+        <ul>
+            <li><input type="text" value="2" /></li>
+            <li><input type="text" value="6" /></li>
+            <li><input type="text" value="8" /></li>
+            <li><input type="text" value="9" /></li>
+        </ul>
+
+        <ul>
+            <li><input type="checkbox" value="2" /></li>
+            <li><input type="checkbox" value="6" /></li>
+            <li><input type="checkbox" value="8" /></li>
+            <li><input type="checkbox" value="9" /></li>
+        </ul>
+
+        <textarea name="result" rows="8" cols="40"></textarea>
+
+        <ul id="noForm">
+            <li>
+                <input name="stuff" type="checkbox" value="2" />
+                <input name="hobbies[]" type="text" value="qewfw" />
+                <input name="hobbies[]" type="text" value="ayx" />
+            </li>
+            <li>
+                <input name="stuff" type="checkbox" value="7" />
+                <input name="hobbies[]" type="text" value="wewaafw" />
+                <input name="hobbies[]" type="text" value="weoipu" />
+            </li>
+            <li>
+                <input name="stuff" type="checkbox" value="9" />
+                <input name="hobbies[]" type="text" value="qwdw" />
+                <input name="hobbies[]" type="text" value="piu76" />
+            </li>
+        </ul>
+
+        <table border="0" cellspacing="5" cellpadding="5">
+            <tr>
+                <th>Header</th>
+                <th>Header</th>
+                <th>Header</th>
+                <th>Header</th>
+            </tr>
+            <tr>
+                <th>Data</th>
+                <td>Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+            </tr>
+        </table>
+
+        <script type="text/javascript" charset="utf-8">
+            $.ready(function(){
+                $('ul:nth-child(1)').find('li').css({
+                    color: '#f60'
+                }).each(function(i){
+                    var el = $.el("strong", 'num', {
+                        'id': 'piet' + i
+                    }).text(i);
+                    $(this).append(el);
+                });
+
+                val = $('input[type="text"]').css({
+                    color: 'red'
+                }).getValue(true);
+
+                $('textarea').value(val)
+
+                var cb = $('input[type="checkbox"]').click(function(e){
+                    anyChecked = cb.isAnyChecked()
+                    $('textarea').value(anyChecked)
+                });
+
+                $('td,th').delegate('click',function(e){
+                    console.log(this);
+                });
+
+                $('th:nth-child(1)').css({
+                    backgroundColor: '#f60'
+                });
+            });
+        </script>
+    </body>
+</html>
