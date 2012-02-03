@@ -1,0 +1,14 @@
+{
+    "name": "Spartan",
+    "description": "Lightweight Mobile JS library",
+    "version": "0.0.1",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:stewartrule/Spartan.git"
+    },
+    "dependencies": {
+        "coffee-script": "1",
+        "uglify-js": "1"
+    },
+    "main": "Spartan.coffee"
+}
