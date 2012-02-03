@@ -13,35 +13,43 @@
     createTextNode = (txt) ->
         document.createTextNode txt
 
-
     FN =
         remove : () ->
             p = @parentNode
             if p
                 p.removeChild this
+
         text : (t) ->
             FN.empty.call this
             @appendChild createTextNode(t)
+
         empty : () ->
             while @.firstChild
                 @.removeChild this.firstChild
             @innerHTML = ""
+
         value: (v) ->
             @value = v
+
         html: (html) ->
             @innerHTML = html
+
         getHtml: () ->
             @innerHTML
+
         getValue: () ->
             @value
+
         getText: () ->
-            striptags this.innerHTML     
+            striptags this.innerHTML
+
         addClass : (name) ->
             if name and name.length
                 unless @className
                     @className = name
                 else
                     @className = @className + " " + name
+
         removeClass : (name) ->
             curVal = @className or ""
             classes = curVal.split(/\s+/)
@@ -52,6 +60,7 @@
                     n.push classes[i]
                 i++
             @className = n.join(" ")
+
         hasClass : (name) ->
             curVal = @className or ""
             classes = curVal.split(/\s+/)
@@ -60,14 +69,18 @@
                 return true if classes[i] is name
                 i++
             false
+
         hide : () ->
             curDisplay = $.getStyle @, "display"
             @$oldDisplay = curDisplay unless curDisplay is "none"
             @style.display = "none"
+
         show : () ->
             @style.display = @$oldDisplay or ""
+
         style : (prop, val) ->
             @style[prop] = val
+
         css : (styles) ->
             for prop of styles
                 if styles.hasOwnProperty(prop)
@@ -76,8 +89,10 @@
         bind : (type, callback, capture) ->
             capture = Boolean capture
             @addEventListener type, callback, capture
+
         unbind : (type, callback) ->
             @removeEventListener type, callback, false
+
         click: (callback) ->
             if $.support.touch
                 FN.bind.call @, 'click', (e) ->
@@ -85,15 +100,19 @@
                 FN.bind.call @, 'touchstart', callback
             else
                 FN.bind.call @, 'click', callback
+
         attr : (key,val) ->
             @setAttribute key, val
+
         attributes: (propList) ->
             for prop of propList
                 if propList.hasOwnProperty(prop)
                     FN.attr.call @, prop, propList[prop]
             return
+
         data: (name,val) ->
             FN.attr.call @, "data-#{name}", val
+
         isChecked:() ->
             this.checked
 
