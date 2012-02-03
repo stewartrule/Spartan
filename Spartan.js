@@ -230,7 +230,7 @@
           return this.prototype[anyFn] = function() {
             var args;
             args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-            return this._checkAny(FN[anyFn], args);
+            return this._checkAny(FN[fn], args);
           };
         } else {
           return this.prototype[fn] = function() {

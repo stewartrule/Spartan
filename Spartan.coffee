@@ -170,7 +170,7 @@
                     @_checkAll FN[fn], args
                 anyFn = fn.replace /^(is)/, '$1Any'
                 @prototype[anyFn] = (args...) ->
-                    @_checkAny FN[anyFn], args
+                    @_checkAny FN[fn], args
             else
                 @prototype[fn] = (args...) ->
                     @_execute FN[fn], args
