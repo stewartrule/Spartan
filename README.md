@@ -1,8 +1,8 @@
 # Instance methods
 
-*	text(t)
+*	text(str)
 *	empty()
-*	value(v)
+*	value(val)
 *	html(html)
 *	getHtml()
 *	getValue()

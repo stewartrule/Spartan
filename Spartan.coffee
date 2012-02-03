@@ -19,17 +19,17 @@
             if p
                 p.removeChild this
 
-        text : (t) ->
+        text : (str) ->
             FN.empty.call this
-            @appendChild createTextNode(t)
+            @appendChild createTextNode striptags str
 
         empty : () ->
             while @.firstChild
                 @.removeChild this.firstChild
             @innerHTML = ""
 
-        value: (v) ->
-            @value = v
+        value: (val) ->
+            @value = val
 
         html: (html) ->
             @innerHTML = html
@@ -85,7 +85,7 @@
             for prop of styles
                 if styles.hasOwnProperty(prop)
                     @style[prop] = styles[prop]
-
+            return
         bind : (type, callback, capture) ->
             capture = Boolean capture
             @addEventListener type, callback, capture
