@@ -92,7 +92,7 @@
                     $(this).append(el);
                 });
 
-                val = $('input[type="text"]').css({
+                var val = $('input[type="text"]').css({
                     color: 'red'
                 }).getValue(true);
 
@@ -111,7 +111,7 @@
                     backgroundColor: '#f60'
                 });
 
-                maRoot = $('#multiAppend');
+                var maRoot = $('#multiAppend');
                 for(var i = 0; i < 10; i++){
                     var li = $.el('li').text(i)
                     maRoot.append(li);
