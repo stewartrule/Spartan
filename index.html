@@ -99,7 +99,7 @@
                 $('textarea').value(val)
 
                 var cb = $('input[type="checkbox"]').click(function(e){
-                    anyChecked = cb.isAnyChecked()
+                    var anyChecked = cb.isAnyChecked()
                     $('textarea').value(anyChecked)
                 });
 

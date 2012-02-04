@@ -4,6 +4,7 @@ uglify = require 'uglify-js'
 coffee = require 'coffee-script'
 
 build = (callback) ->
+    console.log 'build spartan', coffee.compile
     name = "Spartan"
     coffeeSrc = "#{name}.coffee"
     csource = fs.readFileSync coffeeSrc, 'utf-8'

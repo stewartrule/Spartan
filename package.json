@@ -7,8 +7,8 @@
         "url": "git@github.com:stewartrule/Spartan.git"
     },
     "dependencies": {
-        "coffee-script": "1",
-        "uglify-js": "1"
+        "coffee-script": "1.2.0",
+        "uglify-js": "1.2.5"
     },
     "main": "Spartan.coffee"
 }

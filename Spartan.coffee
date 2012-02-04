@@ -20,7 +20,7 @@
                 p.removeChild this
 
         text : (str) ->
-            FN.empty.call this
+            @innerHTML = ""
             @appendChild createTextNode striptags str
 
         empty : () ->
@@ -41,7 +41,7 @@
             @value
 
         getText: () ->
-            striptags this.innerHTML
+            striptags @innerHTML
 
         addClass : (name) ->
             if name and name.length
@@ -119,19 +119,20 @@
     # Nodelist wrapper
     class Spartan
         constructor:(selector,@context = document) ->
-            @_nodes = []
+            nodes = []
             if selector.nodeType
-                @_nodes = [selector]
+                nodes = [selector]
             else if selector.unshift and selector.join
-                @_nodes = selector
+                nodes = selector
             else if selector.constructor is String
                 if @context.nodeType
                     query = @context.querySelectorAll selector
-                    @_nodes = [query...]
+                    nodes = [query...]
                 else if @context.constructor is Spartan
                     @context.each (i,node) =>
                         query = node.querySelectorAll selector
-                        @_nodes = @_nodes.concat [query...]
+                        nodes = nodes.concat [query...]
+            @_nodes = nodes
 
         _execute: (callback,args) ->
             for node, index in @_nodes
@@ -163,17 +164,18 @@
 
         @method = (fn) ->
             cb = FN[fn]
+            proto = @prototype
             if fn.indexOf('get') is 0
-                @prototype[fn] = (combine=false, args...) ->
+                proto[fn] = (combine=false, args...) ->
                     @_collect cb, combine, args
             else if fn.indexOf('is') is 0
-                @prototype[fn] = (args...) ->
+                proto[fn] = (args...) ->
                     @_checkAll cb, args
                 anyFn = fn.replace /^(is)/, '$1Any'
-                @prototype[anyFn] = (args...) ->
+                proto[anyFn] = (args...) ->
                     @_checkAny cb, args
             else
-                @prototype[fn] = (args...) ->
+                proto[fn] = (args...) ->
                     @_execute cb, args
 
         for method of FN

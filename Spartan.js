@@ -23,9 +23,9 @@
         p = this.parentNode;
         if (p) return p.removeChild(this);
       },
-      text: function(t) {
-        FN.empty.call(this);
-        return this.appendChild(createTextNode(t));
+      text: function(str) {
+        this.innerHTML = "";
+        return this.appendChild(createTextNode(striptags(str)));
       },
       empty: function() {
         while (this.firstChild) {
@@ -33,8 +33,8 @@
         }
         return this.innerHTML = "";
       },
-      value: function(v) {
-        return this.value = v;
+      value: function(val) {
+        return this.value = val;
       },
       html: function(html) {
         return this.innerHTML = html;
@@ -93,16 +93,10 @@
         return this.style[prop] = val;
       },
       css: function(styles) {
-        var prop, _results;
-        _results = [];
+        var prop;
         for (prop in styles) {
-          if (styles.hasOwnProperty(prop)) {
-            _results.push(this.style[prop] = styles[prop]);
-          } else {
-            _results.push(void 0);
-          }
+          if (styles.hasOwnProperty(prop)) this.style[prop] = styles[prop];
         }
-        return _results;
       },
       bind: function(type, callback, capture) {
         capture = Boolean(capture);
@@ -143,25 +137,26 @@
       var method;
 
       function Spartan(selector, context) {
-        var query,
+        var nodes, query,
           _this = this;
         this.context = context != null ? context : document;
-        this._nodes = [];
+        nodes = [];
         if (selector.nodeType) {
-          this._nodes = [selector];
+          nodes = [selector];
         } else if (selector.unshift && selector.join) {
-          this._nodes = selector;
+          nodes = selector;
         } else if (selector.constructor === String) {
           if (this.context.nodeType) {
             query = this.context.querySelectorAll(selector);
-            this._nodes = __slice.call(query);
+            nodes = __slice.call(query);
           } else if (this.context.constructor === Spartan) {
             this.context.each(function(i, node) {
               query = node.querySelectorAll(selector);
-              return _this._nodes = _this._nodes.concat(__slice.call(query));
+              return nodes = nodes.concat(__slice.call(query));
             });
           }
         }
+        this._nodes = nodes;
       }
 
       Spartan.prototype._execute = function(callback, args) {
@@ -212,31 +207,33 @@
       };
 
       Spartan.method = function(fn) {
-        var anyFn;
+        var anyFn, cb, proto;
+        cb = FN[fn];
+        proto = this.prototype;
         if (fn.indexOf('get') === 0) {
-          return this.prototype[fn] = function() {
+          return proto[fn] = function() {
             var args, combine;
             combine = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
             if (combine == null) combine = false;
-            return this._collect(FN[fn], combine, args);
+            return this._collect(cb, combine, args);
           };
         } else if (fn.indexOf('is') === 0) {
-          this.prototype[fn] = function() {
+          proto[fn] = function() {
             var args;
             args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-            return this._checkAll(FN[fn], args);
+            return this._checkAll(cb, args);
           };
           anyFn = fn.replace(/^(is)/, '$1Any');
-          return this.prototype[anyFn] = function() {
+          return proto[anyFn] = function() {
             var args;
             args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-            return this._checkAny(FN[fn], args);
+            return this._checkAny(cb, args);
           };
         } else {
-          return this.prototype[fn] = function() {
+          return proto[fn] = function() {
             var args;
             args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-            return this._execute(FN[fn], args);
+            return this._execute(cb, args);
           };
         }
       };
