@@ -166,27 +166,6 @@
                     return false
             true
 
-        @method = (fn) ->
-            cb = FN[fn]
-            proto = @prototype
-            if fn.indexOf('get') is 0
-                proto[fn] = (combine=false, args...) ->
-                    @_collect cb, combine, args
-            else if fn.indexOf('is') is 0
-                proto[fn] = (args...) ->
-                    @_checkAll cb, args
-                anyFn = fn.replace /^(is)/, '$1Any'
-                proto[anyFn] = (args...) ->
-                    @_checkAny cb, args
-            else
-                proto[fn] = (args...) ->
-                    @_execute cb, args
-            return
-
-        for method of FN
-            if FN.hasOwnProperty method
-                @method method
-
         lenght: ->
             @_nodes.length
 
@@ -233,6 +212,28 @@
         append: () ->
             @_add arguments, (pNode, cNode) ->
                 pNode.appendChild cNode
+
+        # Copy methods from FN to the Spartan prototype so they can be called on collections
+        @method = (name) ->
+            cb = FN[name]
+            proto = @prototype
+            if name.indexOf('get') is 0
+                proto[name] = (combine=false, args...) ->
+                    @_collect cb, combine, args
+            else if name.indexOf('is') is 0
+                proto[name] = (args...) ->
+                    @_checkAll cb, args
+                anyFnName = name.replace /^(is)/, '$1Any'
+                proto[anyFnName] = (args...) ->
+                    @_checkAny cb, args
+            else
+                proto[name] = (args...) ->
+                    @_execute cb, args
+            return
+
+        for methodName of FN
+            if FN.hasOwnProperty methodName
+                @method methodName
 
     clone = (elm) ->
         if elm.nodeType
