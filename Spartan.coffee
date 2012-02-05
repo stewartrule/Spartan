@@ -21,12 +21,13 @@
 
         text : (str) ->
             @innerHTML = ""
-            @appendChild createTextNode striptags str
+            @appendChild createTextNode striptags "#{str}"
 
         empty : () ->
             while @firstChild
                 @removeChild this.firstChild
             @innerHTML = ""
+            return
 
         value: (val) ->
             @value = val
@@ -49,6 +50,7 @@
                     @className = name
                 else
                     @className = @className + " " + name
+            return
 
         removeClass : (name) ->
             curVal = @className or ""
@@ -78,21 +80,17 @@
         show : () ->
             @style.display = @$oldDisplay or ""
 
-        style : (prop, val) ->
-            @style[prop] = val
-
         css : (styles) ->
             for prop of styles
                 if styles.hasOwnProperty(prop)
                     @style[prop] = styles[prop]
             return
         bind : (type, callback, capture) ->
-            capture = Boolean capture
-            @addEventListener type, callback, capture
-
+            @addEventListener type, callback, !!capture
+            return
         unbind : (type, callback) ->
             @removeEventListener type, callback, false
-
+            return
         click: (callback) ->
             if $.support.touch
                 FN.bind.call @, 'click', (e) ->
@@ -100,9 +98,10 @@
                 FN.bind.call @, 'touchstart', callback
             else
                 FN.bind.call @, 'click', callback
-
+            return
         attr : (key,val) ->
             @setAttribute key, val
+            return
 
         attributes: (propList) ->
             for prop of propList
@@ -112,6 +111,7 @@
 
         data: (name,val) ->
             FN.attr.call @, "data-#{name}", val
+            return
 
         isChecked:() ->
             this.checked
@@ -177,6 +177,7 @@
             else
                 proto[fn] = (args...) ->
                     @_execute cb, args
+            return
 
         for method of FN
             if FN.hasOwnProperty method
@@ -207,17 +208,31 @@
                         callback.call node
                         return
 
-        prepend: (nodes...) ->
-            for pNode in @_nodes
-                for cNode in nodes
-                    pNode.insertBefore ensureDomNode(cNode), pNode.firstChild
+        _add: (args,cb) ->
+            newNodes = [args...]
+            nodes = @_nodes
+            shouldClone = nodes.length > 1
+            for pNode in nodes
+                for cNode in newNodes
+                    cNode = clone(cNode) if shouldClone
+                    cb pNode, ensureDomNode(cNode)
             @
 
-        append: (nodes...) ->
-            for pNode in @_nodes
-                for cNode in nodes
-                    pNode.appendChild ensureDomNode(cNode)
-            @
+        prepend: () ->
+            @_add arguments, (pNode, cNode) ->
+                pNode.insertBefore cNode, pNode.firstChild
+
+        append: () ->
+            @_add arguments, (pNode, cNode) ->
+                pNode.appendChild cNode
+
+    clone = (elm) ->
+        if elm.nodeType
+            elm.cloneNode(true)
+        else if elm.constructor is Spartan
+            elm.get(0).cloneNode(true)
+        else
+            elm
 
     ensureDomNode = (elm) ->
         if elm.nodeType

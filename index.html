@@ -86,6 +86,7 @@
                 $('ul:nth-child(1)').find('li').css({
                     color: '#f60'
                 }).each(function(i){
+                    console.log(i);
                     var el = $.el("strong", 'num', {
                         'id': 'piet' + i
                     }).text(i);

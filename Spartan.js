@@ -3,7 +3,7 @@
     __indexOf = Array.prototype.indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   (function(window, document) {
-    var $, DOMReady, DOMReadyCallbacks, FN, Spartan, createElement, createTextNode, ensureDomNode, striptags, trim;
+    var $, DOMReady, DOMReadyCallbacks, FN, Spartan, clone, createElement, createTextNode, ensureDomNode, striptags, trim;
     striptags = function(str) {
       return str.replace(/<\/?[^>]+>/gi, '');
     };
@@ -25,13 +25,13 @@
       },
       text: function(str) {
         this.innerHTML = "";
-        return this.appendChild(createTextNode(striptags(str)));
+        return this.appendChild(createTextNode(striptags("" + str)));
       },
       empty: function() {
         while (this.firstChild) {
           this.removeChild(this.firstChild);
         }
-        return this.innerHTML = "";
+        this.innerHTML = "";
       },
       value: function(val) {
         return this.value = val;
@@ -51,9 +51,9 @@
       addClass: function(name) {
         if (name && name.length) {
           if (!this.className) {
-            return this.className = name;
+            this.className = name;
           } else {
-            return this.className = this.className + " " + name;
+            this.className = this.className + " " + name;
           }
         }
       },
@@ -89,9 +89,6 @@
       show: function() {
         return this.style.display = this.$oldDisplay || "";
       },
-      style: function(prop, val) {
-        return this.style[prop] = val;
-      },
       css: function(styles) {
         var prop;
         for (prop in styles) {
@@ -99,24 +96,23 @@
         }
       },
       bind: function(type, callback, capture) {
-        capture = Boolean(capture);
-        return this.addEventListener(type, callback, capture);
+        this.addEventListener(type, callback, !!capture);
       },
       unbind: function(type, callback) {
-        return this.removeEventListener(type, callback, false);
+        this.removeEventListener(type, callback, false);
       },
       click: function(callback) {
         if ($.support.touch) {
           FN.bind.call(this, 'click', function(e) {
             return e.preventDefault();
           });
-          return FN.bind.call(this, 'touchstart', callback);
+          FN.bind.call(this, 'touchstart', callback);
         } else {
-          return FN.bind.call(this, 'click', callback);
+          FN.bind.call(this, 'click', callback);
         }
       },
       attr: function(key, val) {
-        return this.setAttribute(key, val);
+        this.setAttribute(key, val);
       },
       attributes: function(propList) {
         var prop;
@@ -127,7 +123,7 @@
         }
       },
       data: function(name, val) {
-        return FN.attr.call(this, "data-" + name, val);
+        FN.attr.call(this, "data-" + name, val);
       },
       isChecked: function() {
         return this.checked;
@@ -211,7 +207,7 @@
         cb = FN[fn];
         proto = this.prototype;
         if (fn.indexOf('get') === 0) {
-          return proto[fn] = function() {
+          proto[fn] = function() {
             var args, combine;
             combine = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
             if (combine == null) combine = false;
@@ -224,13 +220,13 @@
             return this._checkAll(cb, args);
           };
           anyFn = fn.replace(/^(is)/, '$1Any');
-          return proto[anyFn] = function() {
+          proto[anyFn] = function() {
             var args;
             args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
             return this._checkAny(cb, args);
           };
         } else {
-          return proto[fn] = function() {
+          proto[fn] = function() {
             var args;
             args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
             return this._execute(cb, args);
@@ -291,37 +287,46 @@
         });
       };
 
-      Spartan.prototype.prepend = function() {
-        var cNode, nodes, pNode, _i, _j, _len, _len2, _ref;
-        nodes = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-        _ref = this._nodes;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          pNode = _ref[_i];
-          for (_j = 0, _len2 = nodes.length; _j < _len2; _j++) {
-            cNode = nodes[_j];
-            pNode.insertBefore(ensureDomNode(cNode), pNode.firstChild);
+      Spartan.prototype._add = function(args, cb) {
+        var cNode, newNodes, nodes, pNode, shouldClone, _i, _j, _len, _len2;
+        newNodes = __slice.call(args);
+        nodes = this._nodes;
+        shouldClone = nodes.length > 1;
+        for (_i = 0, _len = nodes.length; _i < _len; _i++) {
+          pNode = nodes[_i];
+          for (_j = 0, _len2 = newNodes.length; _j < _len2; _j++) {
+            cNode = newNodes[_j];
+            if (shouldClone) cNode = clone(cNode);
+            cb(pNode, ensureDomNode(cNode));
           }
         }
         return this;
       };
 
+      Spartan.prototype.prepend = function() {
+        return this._add(arguments, function(pNode, cNode) {
+          return pNode.insertBefore(cNode, pNode.firstChild);
+        });
+      };
+
       Spartan.prototype.append = function() {
-        var cNode, nodes, pNode, _i, _j, _len, _len2, _ref;
-        nodes = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-        _ref = this._nodes;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          pNode = _ref[_i];
-          for (_j = 0, _len2 = nodes.length; _j < _len2; _j++) {
-            cNode = nodes[_j];
-            pNode.appendChild(ensureDomNode(cNode));
-          }
-        }
-        return this;
+        return this._add(arguments, function(pNode, cNode) {
+          return pNode.appendChild(cNode);
+        });
       };
 
       return Spartan;
 
     })();
+    clone = function(elm) {
+      if (elm.nodeType) {
+        return elm.cloneNode(true);
+      } else if (elm.constructor === Spartan) {
+        return elm.get(0).cloneNode(true);
+      } else {
+        return elm;
+      }
+    };
     ensureDomNode = function(elm) {
       if (elm.nodeType) {
         return elm;

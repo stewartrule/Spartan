@@ -14,7 +14,6 @@ build = (callback) ->
         fs.writeFileSync "#{name}.uglified.js", output, 'utf-8'
         util.log "uglified #{jsSrc}"
 
-
 task 'build', 'Build from src', ->
     build()
     setInterval build, 5000
