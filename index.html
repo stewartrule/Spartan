@@ -123,9 +123,12 @@
 
                 var existingLi = $('#multiAppend li').append(em,strong);
                 
-                $('ul:first-child li').replaceWith( $.el('li').text('abc') ).css({
+                $('ul:first-child li').replaceWith($.el('li').text('abc')).css({
                     color:'#f0f'
-                });
+                }).addClass('test');
+                
+                // $('ul:first-child li:nth-child(3)').removeClass('test');
+                console.log($('ul:first-child li').hasClass('test'));
             });
         </script>
     </body>

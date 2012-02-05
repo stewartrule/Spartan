@@ -152,14 +152,7 @@
             else
                 ret
 
-        _checkAny: (callback,args) ->
-            for node, index in @_nodes
-                pass = callback.apply node, args
-                if pass
-                    return true
-            false
-
-        _checkAll: (callback,args) ->
+        _check: (callback,args) ->
             for node, index in @_nodes
                 pass = callback.apply node, args
                 unless pass
@@ -225,12 +218,9 @@
             if name.indexOf('get') is 0
                 proto[name] = (combine=false, args...) ->
                     @_collect cb, combine, args
-            else if name.indexOf('is') is 0
+            else if name.indexOf('is') is 0 or name.indexOf('has') is 0
                 proto[name] = (args...) ->
-                    @_checkAll cb, args
-                anyFnName = name.replace /^(is)/, '$1Any'
-                proto[anyFnName] = (args...) ->
-                    @_checkAny cb, args
+                    @_check cb, args
             else
                 proto[name] = (args...) ->
                     @_execute cb, args

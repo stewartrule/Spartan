@@ -180,18 +180,7 @@
         }
       };
 
-      Spartan.prototype._checkAny = function(callback, args) {
-        var index, node, pass, _len, _ref;
-        _ref = this._nodes;
-        for (index = 0, _len = _ref.length; index < _len; index++) {
-          node = _ref[index];
-          pass = callback.apply(node, args);
-          if (pass) return true;
-        }
-        return false;
-      };
-
-      Spartan.prototype._checkAll = function(callback, args) {
+      Spartan.prototype._check = function(callback, args) {
         var index, node, pass, _len, _ref;
         _ref = this._nodes;
         for (index = 0, _len = _ref.length; index < _len; index++) {
@@ -294,7 +283,7 @@
       };
 
       Spartan.method = function(name) {
-        var anyFnName, cb, proto;
+        var cb, proto;
         cb = FN[name];
         proto = this.prototype;
         if (name.indexOf('get') === 0) {
@@ -304,17 +293,11 @@
             if (combine == null) combine = false;
             return this._collect(cb, combine, args);
           };
-        } else if (name.indexOf('is') === 0) {
+        } else if (name.indexOf('is') === 0 || name.indexOf('has') === 0) {
           proto[name] = function() {
             var args;
             args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-            return this._checkAll(cb, args);
-          };
-          anyFnName = name.replace(/^(is)/, '$1Any');
-          proto[anyFnName] = function() {
-            var args;
-            args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-            return this._checkAny(cb, args);
+            return this._check(cb, args);
           };
         } else {
           proto[name] = function() {
