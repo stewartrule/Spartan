@@ -122,7 +122,8 @@
 
     # Nodelist wrapper
     class Spartan
-        constructor:(selector,@context = document) ->
+        constructor:(selector, context) ->
+            @context = context or document
             nodes = []
             if selector.nodeType
                 nodes = [selector]
