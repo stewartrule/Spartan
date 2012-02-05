@@ -188,11 +188,10 @@
             document.addEventListener type, (e) =>
                 for node in @_nodes
                     if e.target and node is e.target
-                        callback.call node
+                        callback.call node, e
                         return
 
-        _add: (args,cb) ->
-            newNodes = [args...]
+        _add: (newNodes,cb) ->
             nodes = @_nodes
             shouldClone = nodes.length > 1
             for pNode in nodes
@@ -202,11 +201,14 @@
             @
 
         replaceWith: () ->
+            replacements = []
             @_add arguments, (oldNode, newNode) ->
                 parent = oldNode.parentNode
                 if parent
                     parent.insertBefore newNode, oldNode
                     parent.removeChild oldNode
+                    replacements.push newNode
+            $ replacements
 
         prepend: () ->
             @_add arguments, (pNode, cNode) ->

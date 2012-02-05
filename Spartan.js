@@ -202,7 +202,7 @@
         return true;
       };
 
-      Spartan.prototype.lenght = function() {
+      Spartan.prototype.length = function() {
         return this._nodes.length;
       };
 
@@ -244,16 +244,15 @@
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             node = _ref[_i];
             if (e.target && node === e.target) {
-              callback.call(node);
+              callback.call(node, e);
               return;
             }
           }
         });
       };
 
-      Spartan.prototype._add = function(args, cb) {
-        var cNode, newNodes, nodes, pNode, shouldClone, _i, _j, _len, _len2;
-        newNodes = __slice.call(args);
+      Spartan.prototype._add = function(newNodes, cb) {
+        var cNode, nodes, pNode, shouldClone, _i, _j, _len, _len2;
         nodes = this._nodes;
         shouldClone = nodes.length > 1;
         for (_i = 0, _len = nodes.length; _i < _len; _i++) {
@@ -268,14 +267,18 @@
       };
 
       Spartan.prototype.replaceWith = function() {
-        return this._add(arguments, function(oldNode, newNode) {
+        var replacements;
+        replacements = [];
+        this._add(arguments, function(oldNode, newNode) {
           var parent;
           parent = oldNode.parentNode;
           if (parent) {
             parent.insertBefore(newNode, oldNode);
-            return parent.removeChild(oldNode);
+            parent.removeChild(oldNode);
+            return replacements.push(newNode);
           }
         });
+        return $(replacements);
       };
 
       Spartan.prototype.prepend = function() {
