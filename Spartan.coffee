@@ -85,12 +85,15 @@
                 if styles.hasOwnProperty(prop)
                     @style[prop] = styles[prop]
             return
+
         bind : (type, callback, capture) ->
             @addEventListener type, callback, !!capture
             return
+
         unbind : (type, callback) ->
             @removeEventListener type, callback, false
             return
+
         click: (callback) ->
             if $.support.touch
                 FN.bind.call @, 'click', (e) ->
@@ -99,6 +102,7 @@
             else
                 FN.bind.call @, 'click', callback
             return
+
         attr : (key,val) ->
             @setAttribute key, val
             return
@@ -218,6 +222,10 @@
                     cb pNode, ensureDomNode(cNode)
             @
 
+        replaceWith: () ->
+            @_add arguments, (pNode, cNode) ->
+
+
         prepend: () ->
             @_add arguments, (pNode, cNode) ->
                 pNode.insertBefore cNode, pNode.firstChild
@@ -304,6 +312,6 @@
         DOMReadyCallbacks.push fn
         return
 
-    window.$ = $
+    window.$ = window.Spartan = $
 
 )(window,document)

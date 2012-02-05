@@ -303,6 +303,10 @@
         return this;
       };
 
+      Spartan.prototype.replaceWith = function() {
+        return this._add(arguments, function(pNode, cNode) {});
+      };
+
       Spartan.prototype.prepend = function() {
         return this._add(arguments, function(pNode, cNode) {
           return pNode.insertBefore(cNode, pNode.firstChild);
@@ -407,7 +411,7 @@
       }
       DOMReadyCallbacks.push(fn);
     };
-    return window.$ = $;
+    return window.$ = window.Spartan = $;
   })(window, document);
 
 }).call(this);
