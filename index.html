@@ -88,7 +88,7 @@
                 }).each(function(i){
                     console.log(i);
                     var el = $.el("strong", 'num', {
-                        'id': 'piet' + i
+                        'id': 'x' + i
                     }).text(i);
                     $(this).append(el);
                 });
@@ -122,6 +122,8 @@
                 var strong = $.el('strong').text('babe');
 
                 var existingLi = $('#multiAppend li').append(em,strong);
+                
+                $('ul:first-child li').replaceWith( $.el('li').text('abc') )
             });
         </script>
     </body>

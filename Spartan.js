@@ -130,7 +130,7 @@
       }
     };
     Spartan = (function() {
-      var method;
+      var methodName;
 
       function Spartan(selector, context) {
         var nodes, query,
@@ -202,42 +202,6 @@
         return true;
       };
 
-      Spartan.method = function(fn) {
-        var anyFn, cb, proto;
-        cb = FN[fn];
-        proto = this.prototype;
-        if (fn.indexOf('get') === 0) {
-          proto[fn] = function() {
-            var args, combine;
-            combine = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-            if (combine == null) combine = false;
-            return this._collect(cb, combine, args);
-          };
-        } else if (fn.indexOf('is') === 0) {
-          proto[fn] = function() {
-            var args;
-            args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-            return this._checkAll(cb, args);
-          };
-          anyFn = fn.replace(/^(is)/, '$1Any');
-          proto[anyFn] = function() {
-            var args;
-            args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-            return this._checkAny(cb, args);
-          };
-        } else {
-          proto[fn] = function() {
-            var args;
-            args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-            return this._execute(cb, args);
-          };
-        }
-      };
-
-      for (method in FN) {
-        if (FN.hasOwnProperty(method)) Spartan.method(method);
-      }
-
       Spartan.prototype.lenght = function() {
         return this._nodes.length;
       };
@@ -304,7 +268,14 @@
       };
 
       Spartan.prototype.replaceWith = function() {
-        return this._add(arguments, function(pNode, cNode) {});
+        return this._add(arguments, function(oldNode, newNode) {
+          var parent;
+          parent = oldNode.parentNode;
+          if (parent) {
+            parent.insertBefore(newNode, oldNode);
+            return parent.removeChild(oldNode);
+          }
+        });
       };
 
       Spartan.prototype.prepend = function() {
@@ -318,6 +289,42 @@
           return pNode.appendChild(cNode);
         });
       };
+
+      Spartan.method = function(name) {
+        var anyFnName, cb, proto;
+        cb = FN[name];
+        proto = this.prototype;
+        if (name.indexOf('get') === 0) {
+          proto[name] = function() {
+            var args, combine;
+            combine = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+            if (combine == null) combine = false;
+            return this._collect(cb, combine, args);
+          };
+        } else if (name.indexOf('is') === 0) {
+          proto[name] = function() {
+            var args;
+            args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+            return this._checkAll(cb, args);
+          };
+          anyFnName = name.replace(/^(is)/, '$1Any');
+          proto[anyFnName] = function() {
+            var args;
+            args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+            return this._checkAny(cb, args);
+          };
+        } else {
+          proto[name] = function() {
+            var args;
+            args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+            return this._execute(cb, args);
+          };
+        }
+      };
+
+      for (methodName in FN) {
+        if (FN.hasOwnProperty(methodName)) Spartan.method(methodName);
+      }
 
       return Spartan;
 

@@ -202,8 +202,11 @@
             @
 
         replaceWith: () ->
-            @_add arguments, (pNode, cNode) ->
-
+            @_add arguments, (oldNode, newNode) ->
+                parent = oldNode.parentNode
+                if parent
+                    parent.insertBefore newNode, oldNode
+                    parent.removeChild oldNode
 
         prepend: () ->
             @_add arguments, (pNode, cNode) ->
