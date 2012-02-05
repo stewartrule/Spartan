@@ -166,7 +166,7 @@
                     return false
             true
 
-        lenght: ->
+        length: ->
             @_nodes.length
 
         get: (index) ->
