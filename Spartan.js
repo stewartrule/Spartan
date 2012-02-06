@@ -135,7 +135,7 @@
       function Spartan(selector, context) {
         var nodes, query,
           _this = this;
-        this.context = context != null ? context : document;
+        this.context = context || document;
         nodes = [];
         if (selector.nodeType) {
           nodes = [selector];
