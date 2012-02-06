@@ -1,4 +1,4 @@
-methods
+# Instance methods
 
 *	length()
 *	get(index)
@@ -30,7 +30,7 @@ methods
 *	data()
 *	isChecked()
 
-static
+# Static methods
 
 *	fn(name, fn)
 *	getStyle(elem, name)
