@@ -290,7 +290,7 @@
             isHashChangeAware: window.onhashchange
             isStandalone: !!nav.standalone
             touch: window.ontouchstart
-            has3d: (window.WebKitCSSMatrix and 'm11' in new WebKitCSSMatrix())
+            has3d: (window.WebKitCSSMatrix and 'm11' of new WebKitCSSMatrix())
             isIOS: isIOS
             isIOS5: isIOS and (/CPU OS 5_\d/i).test userAgent
 
