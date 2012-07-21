@@ -20,8 +20,7 @@
                 p.removeChild this
 
         text : (str) ->
-            @innerHTML = ""
-            @appendChild createTextNode striptags "#{str}"
+            @textContent = striptags "#{str}"
 
         empty : () ->
             while @firstChild
