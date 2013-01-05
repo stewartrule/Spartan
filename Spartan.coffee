@@ -1,4 +1,4 @@
-((window,document) ->
+((window, document) ->
 
     striptags = (str) ->
         str.replace /<\/?[^>]+>/gi, ''
@@ -133,17 +133,17 @@
                     query = @context.querySelectorAll selector
                     nodes = [query...]
                 else if @context.constructor is Spartan
-                    @context.each (i,node) =>
+                    @context.each (i, node) =>
                         query = node.querySelectorAll selector
                         nodes = nodes.concat [query...]
             @_nodes = nodes
 
-        _execute: (callback,args) ->
+        _execute: (callback, args) ->
             for node, index in @_nodes
                 callback.apply node, args
             @
 
-        _collect: (callback,combine,args) ->
+        _collect: (callback, combine, args) ->
             ret = []
             for node, index in @_nodes
                 ret.push callback.apply node, args
@@ -152,7 +152,7 @@
             else
                 ret
 
-        _check: (callback,args) ->
+        _check: (callback, args) ->
             for node, index in @_nodes
                 pass = callback.apply node, args
                 unless pass
@@ -177,14 +177,14 @@
                 callback.call node, index, node
             @
 
-        delegate: (type,callback) ->
+        delegate: (type, callback) ->
             document.addEventListener type, (e) =>
                 for node in @_nodes
                     if e.target and node is e.target
                         callback.call node, e
                         return
 
-        _add: (newNodes,cb) ->
+        _add: (newNodes, cb) ->
             nodes = @_nodes
             shouldClone = nodes.length > 1
             for pNode in nodes
@@ -216,7 +216,7 @@
             cb = FN[name]
             proto = @prototype
             if name.indexOf('get') is 0
-                proto[name] = (combine=false, args...) ->
+                proto[name] = (combine = false, args...) ->
                     @_collect cb, combine, args
             else if name.indexOf('is') is 0 or name.indexOf('has') is 0
                 proto[name] = (args...) ->
@@ -246,11 +246,11 @@
         else if elm.constructor is Spartan
             elm.get(0)
 
-    $ = (selector,context) ->
+    $ = (selector, context) ->
         context or= document
         new Spartan selector, context
 
-    $.fn = (name,fn) ->
+    $.fn = (name, fn) ->
         FN[name] = fn
         Spartan.assign name
 
@@ -270,7 +270,7 @@
         el.addClass className
         el.attributes props
 
-    $.extend = (origin,mixedIn) ->
+    $.extend = (origin, mixedIn) ->
         for prop of mixedIn
             origin[prop] = mixedIn[prop]
         return
