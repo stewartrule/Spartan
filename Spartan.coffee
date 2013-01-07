@@ -102,11 +102,7 @@
                 FN.bind.call @, 'click', callback
             return
 
-        attr : (key,val) ->
-            @setAttribute key, val
-            return
-
-        attributes: (propList) ->
+        attr: (propList) ->
             for prop of propList
                 if propList.hasOwnProperty(prop)
                     FN.attr.call @, prop, propList[prop]
