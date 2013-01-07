@@ -46,7 +46,7 @@
         <ul id="noForm">
             <li>
                 <input name="stuff" type="checkbox" value="2" />
-                <input name="hobbies[]" type="text" value="qewfw" />
+                <input name="hobbies[]" type="text" value="zelda" />
                 <input name="hobbies[]" type="text" value="ayx" />
             </li>
             <li>
@@ -77,16 +77,15 @@
         </table>
 
         <ul id="multiAppend">
-
         </ul>
 
 
         <script type="text/javascript" charset="utf-8">
             $.ready(function(){
+
                 $('ul:nth-child(1)').find('li').css({
                     color: '#f60'
-                }).each(function(i){
-                    console.log(i);
+                }).each(function(i) {
                     var el = $.el("strong", 'num', {
                         'id': 'x' + i
                     }).text(i);
@@ -99,12 +98,16 @@
 
                 $('textarea').value(val)
 
-                var cb = $('input[type="checkbox"]').click(function(e){
-                    var anyChecked = cb.isAnyChecked()
-                    $('textarea').value(anyChecked)
+                $('input[type="text"]').on('change', function(e) {
+                    console.log('typed stuff')
                 });
 
-                $('td,th').delegate('click',function(e){
+                var cb = $('input[type="checkbox"]').click(function(e) {
+                    var allChecked = cb.isChecked();
+                    $('textarea').value(allChecked);
+                });
+
+                $('td, th').delegate('click', function(e) {
                     console.log(this);
                 });
 
@@ -114,21 +117,24 @@
 
                 var maRoot = $('#multiAppend');
                 for(var i = 0; i < 10; i++){
-                    var li = $.el('li').text(i)
+                    var li = $.el('li').text(i);
                     maRoot.append(li);
                 }
+
+                console.log(maRoot.find('li').getText());
 
                 var em = $.el('strong').text('yo');
                 var strong = $.el('strong').text('babe');
 
-                var existingLi = $('#multiAppend li').append(em,strong);
-                
+                var existingLi = $('#multiAppend li').append(em, strong);
+
                 $('ul:first-child li').replaceWith($.el('li').text('abc')).css({
                     color:'#f0f'
                 }).addClass('test');
-                
+
                 // $('ul:first-child li:nth-child(3)').removeClass('test');
                 console.log($('ul:first-child li').hasClass('test'));
+
             });
         </script>
     </body>
